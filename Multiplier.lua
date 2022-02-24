@@ -28,8 +28,11 @@ function Multiplier(m, allPrices)
         -- Traverse through the whole array (2D), from path 1 to path 3.
         for i, v in ipairs(allPrices) do
             -- Traverse through the array of the array (1D), from tier 1 to tier 5.
+            -- Multiply by the multiplier, then round to nearest five.
             for path, value in ipairs(allPrices[i]) do 
                 allPrices[i][path] = value * m
+                allPrices[i][path] = RoundToFive(allPrices[i][path])
+                print(allPrices[i][path])
             end
         end
     return allPrices
@@ -50,7 +53,7 @@ function GiveAllTables(towerPrices)
 end
 
 -- Copies the original table with its children as deep as possible and returns a copy. Does not handle metatables
--- Copy is needed because Lua passes by reference, not value 
+-- Copy is needed because Lua passes by reference, not value
 function Deepcopy(orig)
     local orig_type = type(orig)
     local copy
@@ -63,6 +66,11 @@ function Deepcopy(orig)
         copy = orig
     end
     return copy
+end
+
+-- Takes a number input, rounds to the nearest five
+function RoundToFive(num)
+    return math.floor((num + 2.5) / 5 ) * 5
 end
 
 -- print(dump(Multiplier(2, prices.DartMonkey)))
