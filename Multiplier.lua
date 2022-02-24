@@ -4,9 +4,30 @@ prices["DartMonkey"] = {
   { 140, 220, 300, 1800, 15000 },
   { 100, 190, 400, 8000, 45000 },
   { 90, 200, 625, 2000, 25000 },
+  { 200 },
 }
 
--- Displays table to console
+local p = {}
+
+-- --------
+-- Input and Output parsing
+-- --------
+function p.Table() -- this should be passing frame into the function when implemented on the wiki
+    inputString = "5-0-0"  -- this should be inputString = frame.args[2] and not a string literal
+    
+    -- Remove dashes and isolate first three characters.
+    inputString = string.gsub(inputString,"-","")
+    inputString = string.sub(inputString, 1, 3)
+
+    a = tonumber(string.sub(inputString, 1, 1))   
+    b = tonumber(string.sub(inputString, 2, 2))
+    c = tonumber(string.sub(inputString, 3, 3))
+
+    input = { a, b, c }
+    print(dump(input))
+end
+
+-- Displays table to console (Helper Function)
 function dump(o)
     if type(o) == 'table' then
        local s = '{ '
@@ -20,19 +41,41 @@ function dump(o)
     end
   end
 
+
 -- ------------
 -- Functions
 -- ------------
+
+function Summation(towerPrices)
+    tabletest = GiveAllTables(towerPrices)
+    local totalSum = 0
+    local inputString = "5-0-0" -- this should be inputString = frame.args[2] and not a string literal
+    
+    -- Remove dashes and isolate first three characters.
+    inputString = string.gsub(inputString,"-","")
+    inputString = string.sub(inputString, 1, 3)
+
+    a = tonumber(string.sub(inputString, 1, 1))
+    b = tonumber(string.sub(inputString, 2, 2))
+    c = tonumber(string.sub(inputString, 3, 3))
+
+    input = { a, b, c }
+    --return input
+    return tabletest
+end
+
+print(dump(Summation(prices.DartMonkey)))
+
+
 -- Take a table (allPrices) and modifier (m) input, returns a table ouput. Multiplies all values by m
 function Multiplier(m, allPrices)
-        -- Traverse through the whole array (2D), from path 1 to path 3.
+        -- Traverse through the whole array (2D), from path 1 to path 3 and base tower.
         for i, v in ipairs(allPrices) do
             -- Traverse through the array of the array (1D), from tier 1 to tier 5.
             -- Multiply by the multiplier, then round to nearest five.
             for path, value in ipairs(allPrices[i]) do 
                 allPrices[i][path] = value * m
                 allPrices[i][path] = RoundToFive(allPrices[i][path])
-                print(allPrices[i][path])
             end
         end
     return allPrices
