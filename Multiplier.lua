@@ -98,15 +98,16 @@ function RoundToFive(num)
     return math.floor((num + 2.5) / 5 ) * 5
 end
 
-function Summation(towerPrices)
+function Serialize(towerPrices)
     allTables = GiveAllTables(towerPrices)
     local totalSum = 0
     local summedValues = {}
-    local inputString = "5-0-0" -- this should be inputString = frame.args[2] and not a string literal
+    local inputString = "0-4-1" -- this should be inputString = frame.args[2] and not a string literal
     
     -- Remove dashes and isolate first three characters.
     inputString = string.gsub(inputString,"-","")
     inputString = string.sub(inputString, 1, 3)
+    cleanInt = tonumber(inputString)
 
     a = tonumber(string.sub(inputString, 1, 1))
     b = tonumber(string.sub(inputString, 2, 2))
@@ -114,6 +115,29 @@ function Summation(towerPrices)
 
     input = { a, b, c }
     
+    if cleanInt >= 100 and cleanInt <=500 then
+        if cleanInt % 100 == 0 then
+            print("math path 1")
+        else
+            print("Number must be 100, 200, 300, 400, or 500.")
+            return
+        end
+    elseif cleanInt >= 10 and cleanInt <= 50 then
+        if cleanInt % 10 == 0 then
+            print("math path 2")
+        else
+            print("Number must be 10, 20, 30, 40, or 50.")
+            return
+        end
+    elseif cleanInt >= 1 and cleanInt <=5 then
+        print("math path 3")
+    else
+        print("Input not in range. Input must be 100-500, 10-50, or 1-5.")
+        return
+    end
+
+    
+
     -- Iterate through the allTables 4D array 
     for key, difficultyTable in ipairs(allTables) do
 
@@ -130,8 +154,6 @@ function Summation(towerPrices)
 
     --return input
     return allTables
-
-
 end
 
 print(dump(Summation(prices.DartMonkey)))
