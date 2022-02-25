@@ -7,25 +7,25 @@ prices["DartMonkey"] = {
   { 200 },
 }
 
-local p = {}
+-- local p = {}
 
 -- --------
 -- Input and Output parsing
 -- --------
-function p.Table() -- this should be passing frame into the function when implemented on the wiki
-    inputString = "5-0-0"  -- this should be inputString = frame.args[2] and not a string literal
+-- function p.Table() -- this should be passing frame into the function when implemented on the wiki
+--     inputString = "5-0-0"  -- this should be inputString = frame.args[2] and not a string literal
     
-    -- Remove dashes and isolate first three characters.
-    inputString = string.gsub(inputString,"-","")
-    inputString = string.sub(inputString, 1, 3)
+--     -- Remove dashes and isolate first three characters.
+--     inputString = string.gsub(inputString,"-","")
+--     inputString = string.sub(inputString, 1, 3)
 
-    a = tonumber(string.sub(inputString, 1, 1))   
-    b = tonumber(string.sub(inputString, 2, 2))
-    c = tonumber(string.sub(inputString, 3, 3))
+--     a = tonumber(string.sub(inputString, 1, 1))   
+--     b = tonumber(string.sub(inputString, 2, 2))
+--     c = tonumber(string.sub(inputString, 3, 3))
 
-    input = { a, b, c }
-    print(dump(input))
-end
+--     input = { a, b, c }
+--     print(dump(input))
+-- end
 
 -- Displays table to console (Helper Function)
 function dump(o)
@@ -35,7 +35,7 @@ function dump(o)
           if type(k) ~= 'number' then k = '"'..k..'"' end
           s = s .. '['..k..'] = ' .. dump(v) .. ','
        end
-       return s .. '} '
+       return s .. '} \n'
     else
        return tostring(o)
     end
@@ -46,25 +46,7 @@ function dump(o)
 -- Functions
 -- ------------
 
-function Summation(towerPrices)
-    tabletest = GiveAllTables(towerPrices)
-    local totalSum = 0
-    local inputString = "5-0-0" -- this should be inputString = frame.args[2] and not a string literal
-    
-    -- Remove dashes and isolate first three characters.
-    inputString = string.gsub(inputString,"-","")
-    inputString = string.sub(inputString, 1, 3)
 
-    a = tonumber(string.sub(inputString, 1, 1))
-    b = tonumber(string.sub(inputString, 2, 2))
-    c = tonumber(string.sub(inputString, 3, 3))
-
-    input = { a, b, c }
-    --return input
-    return tabletest
-end
-
-print(dump(Summation(prices.DartMonkey)))
 
 
 -- Take a table (allPrices) and modifier (m) input, returns a table ouput. Multiplies all values by m
@@ -116,5 +98,42 @@ function RoundToFive(num)
     return math.floor((num + 2.5) / 5 ) * 5
 end
 
+function Summation(towerPrices)
+    allTables = GiveAllTables(towerPrices)
+    local totalSum = 0
+    local summedValues = {}
+    local inputString = "5-0-0" -- this should be inputString = frame.args[2] and not a string literal
+    
+    -- Remove dashes and isolate first three characters.
+    inputString = string.gsub(inputString,"-","")
+    inputString = string.sub(inputString, 1, 3)
+
+    a = tonumber(string.sub(inputString, 1, 1))
+    b = tonumber(string.sub(inputString, 2, 2))
+    c = tonumber(string.sub(inputString, 3, 3))
+
+    input = { a, b, c }
+    
+    -- Iterate through the allTables 4D array 
+    for key, difficultyTable in ipairs(allTables) do
+
+        print(dump(allTables[key]))
+        -- Iterate through all three paths.
+        for pathIndex, pathTier in ipairs(input) do
+            print("Path", pathIndex, ":")
+
+        end
+
+
+        
+    end
+
+    --return input
+    return allTables
+
+
+end
+
+print(dump(Summation(prices.DartMonkey)))
 -- print(dump(Multiplier(2, prices.DartMonkey)))
-print(dump(GiveAllTables(prices.DartMonkey)))
+-- print(dump(GiveAllTables(prices.DartMonkey)))
