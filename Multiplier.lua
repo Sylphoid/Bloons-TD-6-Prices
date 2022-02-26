@@ -77,7 +77,7 @@ function GiveAllTables(towerPrices)
     return allMatrix
 end
 
--- Copies the original table with its children as deep as possible and returns a copy. Does not handle metatables
+-- Takes a table input, copies the original table with its children as deep as possible. Does not handle metatables
 -- Copy is needed because Lua passes by reference, not value
 function Deepcopy(orig)
     local orig_type = type(orig)
@@ -93,9 +93,16 @@ function Deepcopy(orig)
     return copy
 end
 
--- Takes a number input, rounds to the nearest five
+-- Takes a number input, rounds to the nearest five.
+-- Numbers ending in 2.5 round down, while 7.5 round up, which occur due to Village discounting
 function RoundToFive(num)
-    return math.floor((num + 2.5) / 5 ) * 5
+    num = num + 2.5
+    print(num)
+    local rem = num % 10
+    if rem > 5 then
+        rem = rem - 5
+    end
+    return math.tointeger(num - rem)
 end
 
 function Serialize(towerPrices)
