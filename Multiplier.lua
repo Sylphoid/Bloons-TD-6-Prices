@@ -102,7 +102,7 @@ function Serialize(towerPrices)
     allTables = GiveAllTables(towerPrices)
     local totalSum = 0
     local summedValues = {}
-    local inputString = "0-4-1" -- this should be inputString = frame.args[2] and not a string literal
+    local inputString = "5-0-0" -- this should be inputString = frame.args[2] and not a string literal
     
     -- Remove dashes and isolate first three characters.
     inputString = string.gsub(inputString,"-","")
@@ -118,6 +118,7 @@ function Serialize(towerPrices)
     if cleanInt >= 100 and cleanInt <=500 then
         if cleanInt % 100 == 0 then
             print("math path 1")
+            print(Summation(input, allTables))
         else
             print("Number must be 100, 200, 300, 400, or 500.")
             return
@@ -125,6 +126,7 @@ function Serialize(towerPrices)
     elseif cleanInt >= 10 and cleanInt <= 50 then
         if cleanInt % 10 == 0 then
             print("math path 2")
+            print(Summation(input, allTables))
         else
             print("Number must be 10, 20, 30, 40, or 50.")
             return
@@ -156,6 +158,56 @@ function Serialize(towerPrices)
     return allTables
 end
 
-print(dump(Summation(prices.DartMonkey)))
+function Summation(input, allTables)
+    local pathTable = {}
+    inputter = { 4, 0, 0 }
+    totalSum = 0
+    local position = 0
+    -- Iterate through the allTables 4D array 
+    for key, difficultyTable in ipairs(allTables) do
+        -- allTables[key] is the difficulty table
+        -- Iterate through the 3D array of allTables[key]'s different paths.
+        for difficultyIndex, difficultyPaths in ipairs(allTables[key]) do
+            pathSum = 0
+            if input[difficultyIndex] ~= 0 then
+                position = 2
+                delta = 1
+            --elseif input[difficultyIndex] 
+            end
+            crossPath1 = allTables[key][position][1]
+            crossPath2 = allTables[key][position][2] + crossPath1
+            crossPath3 = allTables[key][position+delta][1]
+            crossPath4 = allTables[key][position+delta][2] + crossPath3
+            -- Iterate through the allTables[key][difficultyIndex]'s different prices.
+            for pathIndex, pathValue in ipairs(allTables[key][difficultyIndex]) do
+                
+                if pathIndex > input[1] then
+                    break
+                end
+                pathSum = pathSum + pathValue
+                totalSum = pathSum + allTables[key][4][1]
+            end
+            
+            -- print(pathSum)
+            table.insert(pathTable, totalSum)
+            print(totalSum)
+            print(dump(pathTable))
+            print(crossPath1)
+            print(crossPath2)
+            print(crossPath3)
+            print(crossPath4)
+            if inputter[1] ~= 0 then
+                break
+            end
+            -- for i, v in ipairs(inputter) do
+            --     position = i
+            --     return position
+            -- end
+        end
+
+    end
+end
+
+-- print(dump(Serialize(prices.DartMonkey)))
 -- print(dump(Multiplier(2, prices.DartMonkey)))
 -- print(dump(GiveAllTables(prices.DartMonkey)))
