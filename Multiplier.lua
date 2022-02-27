@@ -49,7 +49,7 @@ function dump(o)
 
 
 
--- Take a table (allPrices) and modifier (m) input, returns a table ouput. Multiplies all values by m
+-- Takes a 2D table (allPrices) and number (m) input, returns a 2D table with all values multiplied by m
 function Multiplier(m, allPrices)
         -- Traverse through the whole array (2D), from path 1 to path 3 and base tower.
         for i, v in ipairs(allPrices) do
@@ -63,7 +63,7 @@ function Multiplier(m, allPrices)
     return allPrices
 end
 
--- Loop through Multiplier 4 times to multiply by the scalingAmount for each copy.
+-- Loop through Multiplier 4 times to multiply by the scalingAmount for each copy, returns a 3D array
 -- Run calculations to give all four tables of different difficulties
 function GiveAllTables(towerPrices)
     local scalingAmount = { 0.85, 1, 1.08, 1.2 }
@@ -77,7 +77,7 @@ function GiveAllTables(towerPrices)
     return allMatrix
 end
 
--- Takes a table input, copies the original table with its children as deep as possible. Does not handle metatables
+-- Takes an n-D table input, copies the original table with its children as deep as possible. Does not handle metatables
 -- Copy is needed because Lua passes by reference, not value
 function Deepcopy(orig)
     local orig_type = type(orig)
@@ -97,7 +97,6 @@ end
 -- Numbers ending in 2.5 round down, while 7.5 round up, which occur due to Village discounting
 function RoundToFive(num)
     num = num + 2.5
-    print(num)
     local rem = num % 10
     if rem > 5 then
         rem = rem - 5
@@ -105,11 +104,12 @@ function RoundToFive(num)
     return math.tointeger(num - rem)
 end
 
+-- Takes a 3D array and prepares all data for display, returns a 2D array (supposed to) 
 function Serialize(towerPrices)
     allTables = GiveAllTables(towerPrices)
     local totalSum = 0
     local summedValues = {}
-    local inputString = "5-0-0" -- this should be inputString = frame.args[2] and not a string literal
+    local inputString = "050" -- this should be inputString = frame.args[2] and not a string literal
     
     -- Remove dashes and isolate first three characters.
     inputString = string.gsub(inputString,"-","")
@@ -165,56 +165,77 @@ function Serialize(towerPrices)
     return allTables
 end
 
+-- Takes a 1D array (input) and a 3D array (allTables) to sum up total costs of the specified path and tier
 function Summation(input, allTables)
     local pathTable = {}
-    inputter = { 4, 0, 0 }
-    totalSum = 0
+    local totalSum = 0
     local position = 0
-    -- Iterate through the allTables 4D array 
+    -- Iterate through the allTables 3D array 
     for key, difficultyTable in ipairs(allTables) do
         -- allTables[key] is the difficulty table
-        -- Iterate through the 3D array of allTables[key]'s different paths.
+        -- Iterate through the 2D array of allTables[key]'s different paths.
         for difficultyIndex, difficultyPaths in ipairs(allTables[key]) do
+
             pathSum = 0
-            if input[difficultyIndex] ~= 0 then
+            print(input[difficultyIndex], "input[difficultyIndex]")
+            
+            if input[1] ~= 0 then --position a = 1,2,3,4,5 is true, 0 is false and goes to next
                 position = 2
                 delta = 1
-            --elseif input[difficultyIndex] 
+            elseif input[1] == 0 and input[2] ~= 0 then
+                position = 1
+                delta = 2
+            elseif input[1] == 0 and input[2] == 0 and input[3] ~= 0 then
+                position = 1
+                delta = 1
             end
             crossPath1 = allTables[key][position][1]
             crossPath2 = allTables[key][position][2] + crossPath1
             crossPath3 = allTables[key][position+delta][1]
             crossPath4 = allTables[key][position+delta][2] + crossPath3
-            -- Iterate through the allTables[key][difficultyIndex]'s different prices.
-            for pathIndex, pathValue in ipairs(allTables[key][difficultyIndex]) do
+
+            for inputIndex, inputTier in ipairs(input) do
+                print(inputTier, "inputTier")
+
+                -- Iterate through the allTables[key][difficultyIndex]'s different prices.
+                for pathIndex, pathValue in ipairs(allTables[key][difficultyIndex]) do
+                    if inputTier == 0 then
+                        break
+                    end
+                    if pathIndex > inputTier then
+                        break
+                    end
+                    pathSum = pathSum + pathValue
+                    totalSum = pathSum + allTables[key][4][1]
+                end
                 
-                if pathIndex > input[1] then
+                -- print(pathSum)
+                table.insert(pathTable, totalSum)
+                print(totalSum)
+                print(dump(pathTable))
+                print(crossPath1)
+                print(crossPath2)
+                print(crossPath3)
+                print(crossPath4)
+                if input[1] ~= 0 then
                     break
                 end
-                pathSum = pathSum + pathValue
-                totalSum = pathSum + allTables[key][4][1]
+                -- for i, v in ipairs(inputter) do
+                --     position = i
+                --     return position
+                -- end
             end
-            
-            -- print(pathSum)
-            table.insert(pathTable, totalSum)
-            print(totalSum)
-            print(dump(pathTable))
-            print(crossPath1)
-            print(crossPath2)
-            print(crossPath3)
-            print(crossPath4)
-            if inputter[1] ~= 0 then
-                break
-            end
-            -- for i, v in ipairs(inputter) do
-            --     position = i
-            --     return position
-            -- end
         end
-
     end
 end
 
--- print(dump(Serialize(prices.DartMonkey)))
+print(dump(Serialize(prices.DartMonkey)))
 -- print(dump(Multiplier(2, prices.DartMonkey)))
 -- print(dump(GiveAllTables(prices.DartMonkey)))
+-- function dump works
+-- function Multiplier works
+-- function GiveAlltables works
+-- function deepcopy works
+-- function roundtofive works
+-- function serialize DOESNT
+-- function Summation DOESNT
