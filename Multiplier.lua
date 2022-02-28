@@ -109,7 +109,7 @@ function Serialize(towerPrices)
     allTables = GiveAllTables(towerPrices)
     local totalSum = 0
     local summedValues = {}
-    local inputString = "050" -- this should be inputString = frame.args[2] and not a string literal
+    local inputString = "500" -- this should be inputString = frame.args[2] and not a string literal
     
     -- Remove dashes and isolate first three characters.
     inputString = string.gsub(inputString,"-","")
@@ -125,7 +125,7 @@ function Serialize(towerPrices)
     if cleanInt >= 100 and cleanInt <=500 then
         if cleanInt % 100 == 0 then
             print("math path 1")
-            print(Summation(input, allTables))
+            return Summation(input, allTables)
         else
             print("Number must be 100, 200, 300, 400, or 500.")
             return
@@ -140,25 +140,10 @@ function Serialize(towerPrices)
         end
     elseif cleanInt >= 1 and cleanInt <=5 then
         print("math path 3")
+        print(Summation(input, allTables))
     else
         print("Input not in range. Input must be 100-500, 10-50, or 1-5.")
         return
-    end
-
-    
-
-    -- Iterate through the allTables 4D array 
-    for key, difficultyTable in ipairs(allTables) do
-
-        print(dump(allTables[key]))
-        -- Iterate through all three paths.
-        for pathIndex, pathTier in ipairs(input) do
-            print("Path", pathIndex, ":")
-
-        end
-
-
-        
     end
 
     --return input
@@ -167,18 +152,18 @@ end
 
 -- Takes a 1D array (input) and a 3D array (allTables) to sum up total costs of the specified path and tier
 function Summation(input, allTables)
-    local pathTable = {}
+    local treeArray = {}
     local totalSum = 0
     local position = 0
     -- Iterate through the allTables 3D array 
     for key, difficultyTable in ipairs(allTables) do
+        local pathArray = {}
         -- allTables[key] is the difficulty table
         -- Iterate through the 2D array of allTables[key]'s different paths.
         for difficultyIndex, difficultyPaths in ipairs(allTables[key]) do
 
             pathSum = 0
             print(input[difficultyIndex], "input[difficultyIndex]")
-            
             if input[1] ~= 0 then --position a = 1,2,3,4,5 is true, 0 is false and goes to next
                 position = 2
                 delta = 1
@@ -194,39 +179,34 @@ function Summation(input, allTables)
             crossPath3 = allTables[key][position+delta][1]
             crossPath4 = allTables[key][position+delta][2] + crossPath3
 
-            for inputIndex, inputTier in ipairs(input) do
-                print(inputTier, "inputTier")
-
-                -- Iterate through the allTables[key][difficultyIndex]'s different prices.
-                for pathIndex, pathValue in ipairs(allTables[key][difficultyIndex]) do
-                    if inputTier == 0 then
-                        break
-                    end
-                    if pathIndex > inputTier then
-                        break
-                    end
-                    pathSum = pathSum + pathValue
-                    totalSum = pathSum + allTables[key][4][1]
-                end
-                
-                -- print(pathSum)
-                table.insert(pathTable, totalSum)
-                print(totalSum)
-                print(dump(pathTable))
-                print(crossPath1)
-                print(crossPath2)
-                print(crossPath3)
-                print(crossPath4)
-                if input[1] ~= 0 then
+            -- Iterate through the allTables[key][difficultyIndex]'s different prices.
+            for pathIndex, pathValue in ipairs(allTables[key][difficultyIndex]) do
+                if input[difficultyIndex] == 0 then -- the position of the input 
+                    break
+                elseif input[difficultyIndex] == nil then -- the position of the input 
                     break
                 end
-                -- for i, v in ipairs(inputter) do
-                --     position = i
-                --     return position
-                -- end
+                
+                if pathIndex > input[difficultyIndex] then
+                    break
+                end
+                pathSum = pathSum + pathValue
+                totalSum = pathSum + allTables[key][4][1]
+            end
+            
+            if pathSum ~= 0 then
+                table.insert(pathArray, totalSum)
+                table.insert(pathArray, totalSum+crossPath1)
+                table.insert(pathArray, totalSum+crossPath2)
+                table.insert(pathArray, totalSum+crossPath3)
+                table.insert(pathArray, totalSum+crossPath4)
+                table.insert(treeArray, pathArray)
+                print(totalSum, "totalSum")
+                print(dump(treeArray), "treeArray")
             end
         end
     end
+    return treeArray
 end
 
 print(dump(Serialize(prices.DartMonkey)))
