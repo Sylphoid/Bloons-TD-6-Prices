@@ -104,12 +104,24 @@ function RoundToFive(num)
     return math.tointeger(num - rem)
 end
 
+function Transpose(treeArray)
+    local res = {}
+
+    for i = 1, #m[1] do
+        res[i] = {}
+        for j = 1, #m do
+            res[i][j] = m[j][i]
+        end
+    end
+    return res
+end
+
 -- Takes a 3D array and prepares all data for display, returns a 2D array (supposed to) 
 function Serialize(towerPrices)
     allTables = GiveAllTables(towerPrices)
     local totalSum = 0
     local summedValues = {}
-    local inputString = "500" -- this should be inputString = frame.args[2] and not a string literal
+    local inputString = "005" -- this should be inputString = frame.args[2] and not a string literal
     
     -- Remove dashes and isolate first three characters.
     inputString = string.gsub(inputString,"-","")
@@ -133,14 +145,14 @@ function Serialize(towerPrices)
     elseif cleanInt >= 10 and cleanInt <= 50 then
         if cleanInt % 10 == 0 then
             print("math path 2")
-            print(Summation(input, allTables))
+            return Summation(input, allTables)
         else
             print("Number must be 10, 20, 30, 40, or 50.")
             return
         end
     elseif cleanInt >= 1 and cleanInt <=5 then
         print("math path 3")
-        print(Summation(input, allTables))
+        return Summation(input, allTables)
     else
         print("Input not in range. Input must be 100-500, 10-50, or 1-5.")
         return
@@ -163,7 +175,7 @@ function Summation(input, allTables)
         for difficultyIndex, difficultyPaths in ipairs(allTables[key]) do
 
             pathSum = 0
-            print(input[difficultyIndex], "input[difficultyIndex]")
+            --print(input[difficultyIndex], "input[difficultyIndex]")
             if input[1] ~= 0 then --position a = 1,2,3,4,5 is true, 0 is false and goes to next
                 position = 2
                 delta = 1
@@ -201,7 +213,6 @@ function Summation(input, allTables)
                 table.insert(pathArray, totalSum+crossPath3)
                 table.insert(pathArray, totalSum+crossPath4)
                 table.insert(treeArray, pathArray)
-                print(totalSum, "totalSum")
                 print(dump(treeArray), "treeArray")
             end
         end
@@ -219,3 +230,6 @@ print(dump(Serialize(prices.DartMonkey)))
 -- function roundtofive works
 -- function serialize DOESNT
 -- function Summation DOESNT
+-- 500 gives 500, 510, 520, 501, 502
+-- 050 gives 050, 150, 250, 051, 052
+-- 005 gives 
