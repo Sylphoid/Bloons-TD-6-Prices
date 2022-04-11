@@ -107,13 +107,26 @@ end
 function Transpose(treeArray)
     local res = {}
 
-    for i = 1, #m[1] do
+    for i = 1, #treeArray[1] do
         res[i] = {}
-        for j = 1, #m do
-            res[i][j] = m[j][i]
+        for j = 1, #treeArray do
+            res[i][j] = treeArray[j][i]
         end
     end
     return res
+end
+
+-- Adds commas delimiter to the thousands place
+function Format(amount)
+    local formatted = amount
+    while true do
+        formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+        if (k == 0) then
+            break
+        end
+    end
+    return formatted
+
 end
 
 -- Takes a 3D array and prepares all data for display, returns a 2D array (supposed to) 
@@ -137,7 +150,7 @@ function Serialize(towerPrices)
     if cleanInt >= 100 and cleanInt <=500 then
         if cleanInt % 100 == 0 then
             print("math path 1")
-            return Summation(input, allTables)
+            return Transpose(Summation(input, allTables))
         else
             print("Number must be 100, 200, 300, 400, or 500.")
             return
@@ -145,14 +158,14 @@ function Serialize(towerPrices)
     elseif cleanInt >= 10 and cleanInt <= 50 then
         if cleanInt % 10 == 0 then
             print("math path 2")
-            return Summation(input, allTables)
+            return Transpose(Summation(input, allTables))
         else
             print("Number must be 10, 20, 30, 40, or 50.")
             return
         end
     elseif cleanInt >= 1 and cleanInt <=5 then
         print("math path 3")
-        return Summation(input, allTables)
+        return Transpose(Summation(input, allTables))
     else
         print("Input not in range. Input must be 100-500, 10-50, or 1-5.")
         return
@@ -207,11 +220,11 @@ function Summation(input, allTables)
             end
             
             if pathSum ~= 0 then
-                table.insert(pathArray, totalSum)
-                table.insert(pathArray, totalSum+crossPath1)
-                table.insert(pathArray, totalSum+crossPath2)
-                table.insert(pathArray, totalSum+crossPath3)
-                table.insert(pathArray, totalSum+crossPath4)
+                table.insert(pathArray, Format(totalSum))
+                table.insert(pathArray, Format(totalSum+crossPath1))
+                table.insert(pathArray, Format(totalSum+crossPath2))
+                table.insert(pathArray, Format(totalSum+crossPath3))
+                table.insert(pathArray, Format(totalSum+crossPath4))
                 table.insert(treeArray, pathArray)
                 print(dump(treeArray), "treeArray")
             end
@@ -232,4 +245,4 @@ print(dump(Serialize(prices.DartMonkey)))
 -- function Summation DOESNT
 -- 500 gives 500, 510, 520, 501, 502
 -- 050 gives 050, 150, 250, 051, 052
--- 005 gives 
+-- 005 gives 005, 105, 205, 015, 025
