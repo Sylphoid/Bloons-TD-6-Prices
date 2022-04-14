@@ -1,11 +1,14 @@
-prices = {}
+-- prices2 = {}
 
-prices["DartMonkey"] = {
-  { 140, 220, 300, 1800, 15000 },
-  { 100, 190, 400, 8000, 45000 },
-  { 90, 200, 625, 2000, 25000 },
-  { 200 },
-}
+-- prices2["DartMonkey"] = {
+--   { 140, 220, 300, 1800, 15000 },
+--   { 100, 190, 400, 8000, 45000 },
+--   { 90, 200, 625, 2000, 25000 },
+--   { 200 },
+-- }
+
+local data = require("prices-data")
+local all_prices = data.prices -- all_prices is a 3D array, with the tower name being the key
 
 -- local p = {}
 
@@ -101,9 +104,10 @@ function RoundToFive(num)
     if rem > 5 then
         rem = rem - 5
     end
-    return math.tointeger(num - rem)
+    return (num - rem)
 end
 
+-- Tranpose a 2D matrix
 function Transpose(treeArray)
     local res = {}
 
@@ -116,7 +120,7 @@ function Transpose(treeArray)
     return res
 end
 
--- Adds commas delimiter to the thousands place
+-- Adds commas delimiter to the thousands place and $ symbol to the front
 function Format(amount)
     local formatted = amount
     while true do
@@ -124,9 +128,9 @@ function Format(amount)
         if (k == 0) then
             break
         end
+        formatted = "$"..formatted
     end
     return formatted
-
 end
 
 -- Takes a 3D array and prepares all data for display, returns a 2D array (supposed to) 
@@ -152,7 +156,7 @@ function Serialize(towerPrices)
             print("math path 1")
             return Transpose(Summation(input, allTables))
         else
-            print("Number must be 100, 200, 300, 400, or 500.")
+            print("Number must be 100, 200, 300, 400, or 500.") -- replace this with return instead of print and remove the return on next line 
             return
         end
     elseif cleanInt >= 10 and cleanInt <= 50 then
@@ -189,6 +193,7 @@ function Summation(input, allTables)
 
             pathSum = 0
             --print(input[difficultyIndex], "input[difficultyIndex]")
+            -- the input not given is then examined by position and delta
             if input[1] ~= 0 then --position a = 1,2,3,4,5 is true, 0 is false and goes to next
                 position = 2
                 delta = 1
@@ -216,7 +221,7 @@ function Summation(input, allTables)
                     break
                 end
                 pathSum = pathSum + pathValue
-                totalSum = pathSum + allTables[key][4][1]
+                totalSum = pathSum + allTables[key][4][1] --Daniel thinks this should be outside the for loop
             end
             
             if pathSum ~= 0 then
@@ -233,7 +238,10 @@ function Summation(input, allTables)
     return treeArray
 end
 
-print(dump(Serialize(prices.DartMonkey)))
+
+priceName = all_prices["Dart Monkey"]
+print(dump(priceName))
+print(dump(Serialize(priceName)))
 -- print(dump(Multiplier(2, prices.DartMonkey)))
 -- print(dump(GiveAllTables(prices.DartMonkey)))
 -- function dump works
