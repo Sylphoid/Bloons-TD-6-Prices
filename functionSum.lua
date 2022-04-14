@@ -45,6 +45,7 @@ b = tonumber(string.sub(inputString, 2, 2))
 c = tonumber(string.sub(inputString, 3, 3))
 
 input = { a, b, c }
+cleanString = tonumber(inputString)
 print(dump(input))
 -- --------
 -- Logic
@@ -91,7 +92,7 @@ if a ~= 0 and b == 0 and c == 0 then
     crossSum = totalSum + b
     print(crossSum)
   end
-elseif b ~= 0 and b == 0 and c == 0 then
+elseif b ~= 0 and a == 0 and c == 0 then
   print("do math for path two")
 elseif c ~= 0 and a == 0 and b == 0 then 
   print("do math for path three")
