@@ -53,17 +53,23 @@ function dump(o)
 
 
 -- Takes a 2D table (allPrices) and number (m) input, returns a 2D table with all values multiplied by m
+-- 
 function Multiplier(m, allPrices)
-        -- Traverse through the whole array (2D), from path 1 to path 3 and base tower.
+    if type(allPrices) == number then
+        allPrices = allPrices * m
+        return allPrices
+    else
+    -- Traverse through the whole array (2D), from path 1 to path 3 and base tower.
         for i, v in ipairs(allPrices) do
             -- Traverse through the array of the array (1D), from tier 1 to tier 5.
             -- Multiply by the multiplier, then round to nearest five.
-            for path, value in ipairs(allPrices[i]) do 
+            for path, value in ipairs(allPrices[i]) do
                 allPrices[i][path] = value * m
                 allPrices[i][path] = RoundToFive(allPrices[i][path])
             end
         end
-    return allPrices
+        return allPrices
+    end
 end
 
 -- Loop through Multiplier 4 times to multiply by the scalingAmount for each copy, returns a 3D array
@@ -255,6 +261,7 @@ end
 
 priceName = all_prices["Dart Monkey"]
 print(dump(Serialize(priceName)))
+-- print(dump(Multiplier(0.85, 400)))
 -- print(dump(Multiplier(2, prices.DartMonkey)))
 -- print(dump(GiveAllTables(prices.DartMonkey)))
 -- function dump works
