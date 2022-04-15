@@ -181,12 +181,15 @@ end
 
 -- Takes a 1D array (input) and a 3D array (allTables) to sum up total costs of the specified path and tier
 function Summation(input, allTables)
-    local treeArray = {}
+    local treeArray1 = {}
+    local treeArray2 = {}
+    local bigtreeArray = {}
     local totalSum = 0
     local position = 0
     -- Iterate through the allTables 3D array 
     for key, difficultyTable in ipairs(allTables) do
-        local pathArray = {}
+        local pathArray1 = {}
+        local pathArray2 = {}
         -- allTables[key] is the difficulty table
         -- Iterate through the 2D array of allTables[key]'s different paths.
         for difficultyIndex, difficultyPaths in ipairs(allTables[key]) do
@@ -225,22 +228,30 @@ function Summation(input, allTables)
             end
             
             if pathSum ~= 0 then
-                table.insert(pathArray, Format(totalSum))
-                table.insert(pathArray, Format(totalSum+crossPath1))
-                table.insert(pathArray, Format(totalSum+crossPath2))
-                table.insert(pathArray, Format(totalSum+crossPath3))
-                table.insert(pathArray, Format(totalSum+crossPath4))
-                table.insert(treeArray, pathArray)
-                print(dump(treeArray), "treeArray")
+                table.insert(pathArray1, Format(totalSum))
+                table.insert(pathArray1, Format(totalSum+crossPath1))
+                table.insert(pathArray1, Format(totalSum+crossPath2))
+                table.insert(pathArray1, Format(totalSum+crossPath3))
+                table.insert(pathArray1, Format(totalSum+crossPath4))
+                -- Sell Prices
+                table.insert(pathArray2, Format(math.ceil(0.7*(totalSum))))
+                table.insert(pathArray2, Format(math.ceil(0.7*(totalSum+crossPath1))))
+                table.insert(pathArray2, Format(math.ceil(0.7*(totalSum+crossPath2))))
+                table.insert(pathArray2, Format(math.ceil(0.7*(totalSum+crossPath3))))
+                table.insert(pathArray2, Format(math.ceil(0.7*(totalSum+crossPath4))))
+                table.insert(treeArray1, pathArray1)
+                table.insert(treeArray2, pathArray2)
             end
         end
     end
-    return treeArray
+    table.insert(bigtreeArray, treeArray1)
+    table.insert(bigtreeArray, treeArray2)
+    print(dump(bigtreeArray))
+    return bigtreeArray
 end
 
 
 priceName = all_prices["Dart Monkey"]
-print(dump(priceName))
 print(dump(Serialize(priceName)))
 -- print(dump(Multiplier(2, prices.DartMonkey)))
 -- print(dump(GiveAllTables(prices.DartMonkey)))
